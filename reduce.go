@@ -18,7 +18,7 @@ package godash
 // first call, its value is 0 and it's incremented for each next call.
 //
 // slice []T: The slice reduce() was called upon.
-type ReducerFn[T any, U any] func(accumulator U, currentValue T, currentIndex int, slice []T) U
+type ReducerFn[T, U any] func(accumulator U, currentValue T, currentIndex int, slice []T) U
 
 // Reduce executes a user-supplied "reducer" callback function on each element
 // of the slice, in order, passing in the return value from the calculation on
