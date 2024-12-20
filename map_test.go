@@ -27,7 +27,7 @@ func TestMap(t *testing.T) {
 		expectedFullName := expected[index]
 
 		if expectedFullName != fullname {
-			t.Fatalf("unexpected output for Map(): %s | expecting: %s ", fullname, expectedFullName)
+			t.Fatalf("unexpected output for Map(): %s | expecting: %s", fullname, expectedFullName)
 		}
 	}
 
