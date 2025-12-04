@@ -1,58 +1,72 @@
 package godash
 
 import (
+	"errors"
 	"fmt"
+	"reflect"
 	"testing"
 )
 
 func TestMapTo(t *testing.T) {
-	// Test case 1: Map struct to string
-	persons := []person{
-		{"Kurt", "Cobain"},
-		{"Dave", "Grohl"},
-		{"Krist", "Novoselic"},
+	tests := []struct {
+		name          string
+		collection    []int
+		mapFunction   MapToFn[int, string]
+		expected      []string
+		expectedError bool
+	}{
+		{
+			name:       "successfully transform integers to strings",
+			collection: []int{1, 2, 3},
+			mapFunction: func(element int) (string, error) {
+				return fmt.Sprintf("num_%d", element), nil
+			},
+			expected:      []string{"num_1", "num_2", "num_3"},
+			expectedError: false,
+		},
+		{
+			name:       "empty collection",
+			collection: []int{},
+			mapFunction: func(element int) (string, error) {
+				return fmt.Sprintf("%d", element), nil
+			},
+			expected:      []string{},
+			expectedError: false,
+		},
+		{
+			name:       "transformation returns error",
+			collection: []int{1, 2, 3},
+			mapFunction: func(element int) (string, error) {
+				if element == 2 {
+					return "", errors.New("transformation failed")
+				}
+				return fmt.Sprintf("%d", element), nil
+			},
+			expected:      []string{"1", "", ""},
+			expectedError: true,
+		},
+		{
+			name:       "single element",
+			collection: []int{42},
+			mapFunction: func(element int) (string, error) {
+				return fmt.Sprintf("value: %d", element), nil
+			},
+			expected:      []string{"value: 42"},
+			expectedError: false,
+		},
 	}
 
-	expected := []string{"Kurt Cobain", "Dave Grohl", "Krist Novoselic"}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := MapTo(tt.collection, tt.mapFunction)
 
-	var mapToFunc MapToFn[person, string] = func(element person) string {
-		return fmt.Sprintf("%s %s", element.FirstName, element.LastName)
-	}
+			if (err != nil) != tt.expectedError {
+				t.Errorf("expected error: %v, got: %v", tt.expectedError, err != nil)
+			}
 
-	result := MapTo(persons, mapToFunc)
-
-	for index, fullname := range result {
-		expectedFullName := expected[index]
-
-		if expectedFullName != fullname {
-			t.Errorf("Test case 1 - unexpected output at index %d: got %s, want %s", 
-				index, fullname, expectedFullName)
-		}
-	}
-
-	// Test case 2: Map numbers to their squares
-	numbers := []int{1, 2, 3, 4, 5}
-	expectedSquares := []int{1, 4, 9, 16, 25}
-
-	squares := MapTo(numbers, func(n int) int {
-		return n * n
-	})
-
-	for index, square := range squares {
-		if expectedSquares[index] != square {
-			t.Errorf("Test case 2 - unexpected output at index %d: got %d, want %d",
-				index, square, expectedSquares[index])
-		}
-	}
-
-	// Test case 3: Empty slice
-	emptySlice := []int{}
-	emptyResult := MapTo(emptySlice, func(n int) string {
-		return fmt.Sprint(n)
-	})
-
-	if len(emptyResult) != 0 {
-		t.Errorf("Test case 3 - expected empty slice, got slice of length %d", 
-			len(emptyResult))
+			if !reflect.DeepEqual(result, tt.expected) {
+				t.Errorf("expected %v, got %v", tt.expected, result)
+			}
+		})
 	}
 }
