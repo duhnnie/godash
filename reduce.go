@@ -1,43 +1,52 @@
 package godash
 
-// ReduceFn represents a function to execute for each element in the slice. Its
-// return value becomes the value of the accumulator parameter on the next
-// invocation of callbackFn. For the last invocation, the return value becomes
-// the return value of reduce(). The function is called with the following
-// arguments:
+// ReducerFn is a callback function type used by the Reduce function to process
+// each element in a slice and accumulate a result.
 //
-// accumulator U: The value resulting from the previous call to callbackFn. On
-// the first call, its value is initialValue if the latter is specified;
-// otherwise its value is slice[0].
+// The function receives four parameters:
+//   - accumulator: The accumulated value from the previous iteration, or initialValue
+//     on the first call
+//   - currentValue: The current element being processed from the slice
+//   - currentIndex: The zero-based index of the current element in the slice
+//   - slice: The original slice being reduced
 //
-// currentValue T: The value of the current element. On the first call, its
-// value is slice[0] if initialValue is specified; otherwise its value is
-// slice[1].
+// The function returns the new accumulator value and an error. If an error is
+// returned, the Reduce operation is immediately terminated and the error is
+// propagated to the caller.
 //
-// currentIndex int: The index position of currentValue in the slice. On the
-// first call, its value is 0 and it's incremented for each next call.
-//
-// slice []T: The slice reduce() was called upon.
-type ReducerFn[T, U any] func(accumulator U, currentValue T, currentIndex int, slice []T) U
+// Type parameters:
+//   - T: The type of elements in the slice being reduced
+//   - U: The type of the accumulator and the final result value
+type ReducerFn[T, U any] func(accumulator U, currentValue T, currentIndex int, slice []T) (U, error)
 
-// Reduce executes a user-supplied "reducer" callback function on each element
-// of the slice, in order, passing in the return value from the calculation on
-// the preceding element. The final result of running the reducer across all
-// elements of the slice is a single value. It receives the following
-// arguments:
+// Reduce applies a reducer function against an accumulator and each element in
+// a slice (from left to right), resulting in a single value. The reducer is
+// invoked for each element in the slice, receiving the accumulated result from
+// the previous invocation.
 //
-// slice []T: the slice to reduce.
+// Parameters:
+//   - slice: The slice to reduce. If empty, initialValue is returned.
+//   - reducer: The function to execute on each element to update the accumulator.
+//   - initialValue: The initial value for the accumulator on the first call.
 //
-// reducer ReducerFn[T, U]: The reducer function.
+// Returns:
+//   - The final accumulated value after processing all elements.
+//   - An error if the reducer function returns an error for any element.
 //
-// initialValue U: A value to which accumulator is initialized the first time
-// the reducer function is called.
-func Reduce[T any, U any](slice []T, reducer ReducerFn[T, U], initialValue U) U {
+// Type parameters:
+//   - T: The type of elements in the input slice
+//   - U: The type of the accumulator and result value (may differ from T)
+func Reduce[T any, U any](slice []T, reducer ReducerFn[T, U], initialValue U) (U, error) {
 	var acc U = initialValue
 
 	for index, item := range slice {
-		acc = reducer(acc, item, index, slice)
+		r, err := reducer(acc, item, index, slice)
+		if err != nil {
+			return acc, err
+		}
+
+		acc = r
 	}
 
-	return acc
+	return acc, nil
 }

@@ -1,40 +1,61 @@
 package godash
 
-// ReducerMapFn represents a function to execute for each element in the map. Its
-// return value becomes the value of the accumulator parameter on the next
-// invocation of callbackFn. For the last invocation, the return value becomes
-// the return value of reduce(). The function is called with the following
-// arguments:
+// ReducerMapFn represents a function to execute for each element in the map during a reduce operation.
+// The function receives the accumulator (result from the previous invocation or initial value),
+// the current key, the current value, and the entire dictionary. It returns the updated accumulator
+// and an error, if any.
 //
-// accumulator U: The value resulting from the previous call to callbackFn. On
-// the first call, its value is initialValue if the latter is specified;
-// otherwise its value is dictionary[firstKey].
+// Parameters:
 //
-// currentKey K: The key of the current element.
+//	accumulator U: The accumulated value from the previous call, or the initial value on the first call.
+//	currentKey K: The key of the current element in the map.
+//	currentValue V: The value of the current element in the map.
+//	dictionary map[K]V: The map being reduced.
 //
-// currentValue V: The value of the current element.
+// Returns:
 //
-// dictionary map[K]V: The map reduce() was called upon.
-type ReducerMapFn[K comparable, V, U any] func(accumulator U, currentKey K, currentValue V, dictionary map[K]V) U
+//	U: The updated accumulator value.
+//	error: An error, if any occurred during processing.
+//
+// Type Parameters:
+//
+//	K: The type of the map's keys (must be comparable).
+//	V: The type of the map's values.
+//	U: The type of the accumulator and return value.
+type ReducerMapFn[K comparable, V, U any] func(accumulator U, currentKey K, currentValue V, dictionary map[K]V) (U, error)
 
-// ReduceMap executes a user-supplied "reducer" callback function on each element
-// of the map, in order, passing in the return value from the calculation on
-// the preceding element. The final result of running the reducer across all
-// elements of the map is a single value. It receives the following
-// arguments:
+// ReduceMap applies a reducer function to each key-value pair in the provided map,
+// accumulating a single result. The reducer function receives the current accumulator,
+// the key and value of the current element, and the entire map. If the reducer returns
+// an error, the reduction stops and the error is returned.
 //
-// m map[K]V: the map to reduce.
+// Parameters:
 //
-// reducer ReducerMapFn[K, V, U]: The reducer function.
+//	m map[K]V: The map to reduce.
+//	reducer ReducerMapFn[K, V, U]: The function to execute for each element.
+//	initialValue U: The initial value for the accumulator.
 //
-// initialValue U: A value to which accumulator is initialized the first time
-// the reducer function is called.
-func ReduceMap[K comparable, V, U any](m map[K]V, reducer ReducerMapFn[K, V, U], initialValue U) U {
+// Returns:
+//
+//	U: The final accumulated value.
+//	error: An error if any occurred during reduction.
+//
+// Type Parameters:
+//
+//	K: The type of the map's keys (must be comparable).
+//	V: The type of the map's values.
+//	U: The type of the accumulator and return value.
+func ReduceMap[K comparable, V, U any](m map[K]V, reducer ReducerMapFn[K, V, U], initialValue U) (U, error) {
 	var acc U = initialValue
 
 	for key, value := range m {
-		acc = reducer(acc, key, value, m)
+		r, err := reducer(acc, key, value, m)
+		if err != nil {
+			return acc, err
+		}
+
+		acc = r
 	}
 
-	return acc
+	return acc, nil
 }

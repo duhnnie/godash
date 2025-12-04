@@ -18,14 +18,17 @@ package godash
 // Returns:
 //   - The first element that matches the criteria and true, or the zero value of the
 //     element type and false if no element matches.
-func Find[T any](slice []T, fn IteratorFn[T, bool]) (T, bool) {
+func Find[T any](slice []T, fn IteratorFn[T, bool]) (T, bool, error) {
 	for index, item := range slice {
-		if fn(item, index, slice) {
-			return item, true
+		f, err := fn(item, index, slice)
+		if err != nil {
+			return *new(T), false, err
+		}
+
+		if f {
+			return item, true, nil
 		}
 	}
 
-	var x T
-
-	return x, false
+	return *new(T), false, nil
 }

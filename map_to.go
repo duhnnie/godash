@@ -1,28 +1,54 @@
+// Package godash provides a collection of utility functions for working with slices and maps,
+// inspired by functional programming concepts similar to Lodash for JavaScript.
 package godash
 
-// MapToFn is a simpler version of MapFn that only receives:
+// MapToFn is a function type that transforms a single element of type T into a value of type U,
+// returning an error if the transformation fails.
 //
-// element T: a value of any type.
+// This is a simpler alternative to MapFn, accepting only the element value without index
+// or collection reference information.
 //
-// It returns a value of any type.
-type MapToFn[T any, U any] func(element T) U
+// Type parameters:
+//   - T: the input element type
+//   - U: the output element type
+//
+// Parameters:
+//   - element: the value to transform
+//
+// Returns:
+//   - U: the transformed value
+//   - error: an error if the transformation fails, nil otherwise
+type MapToFn[T any, U any] func(element T) (U, error)
 
-// MapTo is similar to Map but uses a simpler mapping function that only receives
-// the element value, without the index or collection reference. It creates a new
-// slice populated with the results of calling the provided function on every
-// element in the input slice.
+// MapTo applies a transformation function to each element in a collection and returns a new slice
+// containing the transformed values. If any transformation fails, the operation is aborted and
+// the error is returned.
 //
-// collection is a slice of any type.
+// This function is useful for converting a slice of one type to another type, with error handling
+// for each transformation.
 //
-// mapFunction is the function to call on every element, receiving only the element value.
+// Type parameters:
+//   - T: the element type of the input collection
+//   - U: the element type of the output collection
 //
-// It returns a slice of any type.
-func MapTo[T any, U any](collection []T, mapFunction MapToFn[T, U]) []U {
+// Parameters:
+//   - collection: the input slice to transform
+//   - mapFunction: the transformation function to apply to each element
+//
+// Returns:
+//   - []U: a new slice containing the transformed elements
+//   - error: an error if any transformation fails, nil otherwise
+func MapTo[T any, U any](collection []T, mapFunction MapToFn[T, U]) ([]U, error) {
 	mapped := make([]U, len(collection))
 
 	for index, element := range collection {
-		mapped[index] = mapFunction(element)
+		m, err := mapFunction(element)
+		if err != nil {
+			return mapped, err
+		}
+
+		mapped[index] = m
 	}
 
-	return mapped
+	return mapped, nil
 }

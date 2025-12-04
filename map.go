@@ -1,30 +1,39 @@
 package godash
 
-// MapFn is a function that receives:
+// MapFn is a function type that transforms elements of a collection.
 //
-// element T: a value of any type.
+// Parameters:
+//   - element T: The current element being processed.
+//   - index int: The zero-based index of the current element in the collection.
+//   - collection []T: The entire collection being iterated over.
 //
-// index int: the index in the target collection of the element T.
-//
-// collection []T: the collection that contains the element provided.
-//
-// It returns a value of any type.
-type MapFn[T, U any] func(element T, index int, collection []T) U
+// Returns:
+//   - U: The transformed value.
+//   - error: An error if the transformation fails.
+type MapFn[T, U any] func(element T, index int, collection []T) (U, error)
 
-// Map creates a new slice populated with the results of calling a provided
-// function on every element in the calling slice.
+// Map transforms each element of a collection using the provided function
+// and returns a new slice containing the transformed elements.
 //
-// collection is a slice of any type.
+// Parameters:
+//   - collection: The input slice of elements to transform.
+//   - mapFunction: The transformation function to apply to each element.
 //
-// mapFunction is the function to call on every element in the calling slice.
-//
-// It returns a slice of any type.
-func Map[T, U any](collection []T, mapFunction MapFn[T, U]) []U {
+// Returns:
+//   - A new slice containing the transformed elements.
+//   - An error if any transformation fails. The partially populated result
+//     is returned along with the error.
+func Map[T, U any](collection []T, mapFunction MapFn[T, U]) ([]U, error) {
 	mapped := make([]U, len(collection))
 
 	for index, element := range collection {
-		mapped[index] = mapFunction(element, index, collection)
+		m, err := mapFunction(element, index, collection)
+		if err != nil {
+			return mapped, err
+		}
+
+		mapped[index] = m
 	}
 
-	return mapped
+	return mapped, nil
 }
