@@ -5,6 +5,7 @@ import (
 )
 
 func TestMaxInt(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		a, b     int
 		expected int
@@ -23,6 +24,7 @@ func TestMaxInt(t *testing.T) {
 }
 
 func TestMaxFloat64(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		a, b     float64
 		expected float64
@@ -41,6 +43,7 @@ func TestMaxFloat64(t *testing.T) {
 }
 
 func TestMaxUint(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		a, b     uint
 		expected uint
@@ -58,6 +61,7 @@ func TestMaxUint(t *testing.T) {
 }
 
 func TestMinInt(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		a, b     int
 		expected int
@@ -76,6 +80,7 @@ func TestMinInt(t *testing.T) {
 }
 
 func TestMinFloat64(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		a, b     float64
 		expected float64
@@ -94,6 +99,7 @@ func TestMinFloat64(t *testing.T) {
 }
 
 func TestMinUint(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		a, b     uint
 		expected uint

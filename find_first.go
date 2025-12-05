@@ -1,6 +1,6 @@
 package godash
 
-// Find iterates over elements of the given slice and returns the first element
+// FindFirst iterates over elements of the given slice and returns the first element
 // for which the provided function returns true. The function takes an element,
 // its index, and the entire slice as arguments.
 //
@@ -12,15 +12,15 @@ package godash
 //
 // Parameters:
 //   - slice: The slice to iterate over.
-//   - fn: A function that takes an element of the slice, its index, and the entire
-//     slice, and returns a boolean indicating whether the element matches the criteria.
+//   - fn: A function that takes an element of the slice and returns a boolean
+//     indicating whether the element matches the criteria.
 //
 // Returns:
 //   - The first element that matches the criteria and true, or the zero value of the
 //     element type and false if no element matches.
-func Find[T any](slice []T, fn IteratorFn[T, bool]) (T, bool, error) {
-	for index, item := range slice {
-		f, err := fn(item, index, slice)
+func FindFirst[T any](slice []T, fn ElementIteratorFn[T, bool]) (T, bool, error) {
+	for _, item := range slice {
+		f, err := fn(item)
 		if err != nil {
 			return *new(T), false, err
 		}
