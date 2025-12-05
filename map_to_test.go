@@ -57,7 +57,9 @@ func TestMapTo(t *testing.T) {
 	}
 
 	for _, tt := range tests {
+		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			result, err := MapTo(tt.collection, tt.mapFunction)
 
 			if (err != nil) != tt.expectedError {

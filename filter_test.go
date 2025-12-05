@@ -6,6 +6,7 @@ import (
 )
 
 func TestFilter_IntSlice_EvenNumbers(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 2, 3, 4, 5, 6}
 	result, err := Filter(input, func(item int) (bool, error) {
 		return item%2 == 0, nil
@@ -20,6 +21,7 @@ func TestFilter_IntSlice_EvenNumbers(t *testing.T) {
 }
 
 func TestFilter_StringSlice_LengthGreaterThanThree(t *testing.T) {
+	t.Parallel()
 	input := []string{"go", "a", "ok", "dashboard", "test"}
 	result, err := Filter(input, func(item string) (bool, error) {
 		return len(item) > 3, nil
@@ -34,6 +36,7 @@ func TestFilter_StringSlice_LengthGreaterThanThree(t *testing.T) {
 }
 
 func TestFilter_EmptySlice(t *testing.T) {
+	t.Parallel()
 	input := []int{}
 	result, err := Filter(input, func(item int) (bool, error) {
 		return item > 0, nil
@@ -48,6 +51,7 @@ func TestFilter_EmptySlice(t *testing.T) {
 }
 
 func TestFilter_NoMatches(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 3, 5, 7}
 	result, err := Filter(input, func(item int) (bool, error) {
 		return item%2 == 0, nil
@@ -62,6 +66,7 @@ func TestFilter_NoMatches(t *testing.T) {
 }
 
 func TestFilter_ErrorFromIterator(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 2, 3}
 	testErr := fmt.Errorf("filter error")
 
@@ -81,6 +86,7 @@ func TestFilter_ErrorFromIterator(t *testing.T) {
 }
 
 func TestFilter_AllMatch(t *testing.T) {
+	t.Parallel()
 	input := []int{2, 4, 6, 8}
 	result, err := Filter(input, func(item int) (bool, error) {
 		return item%2 == 0, nil

@@ -6,6 +6,7 @@ import (
 )
 
 func TestAnyTrue(t *testing.T) {
+	t.Parallel()
 	result, err := Any([]int{1, 2, 3, 4}, func(item int) (bool, error) {
 		return item > 2, nil
 	})
@@ -19,6 +20,7 @@ func TestAnyTrue(t *testing.T) {
 }
 
 func TestAnyFalse(t *testing.T) {
+	t.Parallel()
 	result, err := Any([]int{1, 2, 3, 4}, func(item int) (bool, error) {
 		return item > 10, nil
 	})
@@ -32,6 +34,7 @@ func TestAnyFalse(t *testing.T) {
 }
 
 func TestAnyEmptySlice(t *testing.T) {
+	t.Parallel()
 	result, err := Any([]int{}, func(item int) (bool, error) {
 		return true, nil
 	})
@@ -45,6 +48,7 @@ func TestAnyEmptySlice(t *testing.T) {
 }
 
 func TestAnyWithError(t *testing.T) {
+	t.Parallel()
 	_, err := Any([]int{1, 2, 3}, func(item int) (bool, error) {
 		if item == 2 {
 			return false, errors.New("some error")
@@ -58,6 +62,7 @@ func TestAnyWithError(t *testing.T) {
 }
 
 func TestAnyDifferentTypes(t *testing.T) {
+	t.Parallel()
 	result, err := Any([]string{"foo", "bar", "baz"}, func(item string) (bool, error) {
 		return item == "bar", nil
 	})
@@ -71,6 +76,7 @@ func TestAnyDifferentTypes(t *testing.T) {
 }
 
 func TestAnyFirstElement(t *testing.T) {
+	t.Parallel()
 	result, err := Any([]int{5, 1, 2, 3}, func(item int) (bool, error) {
 		return item > 4, nil
 	})

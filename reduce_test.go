@@ -6,6 +6,7 @@ import (
 )
 
 func TestReduceSum(t *testing.T) {
+	t.Parallel()
 	result, err := Reduce([]int{1, 2, 3, 4}, func(acc int, cur int, idx int, slice []int) (int, error) {
 		return acc + cur, nil
 	}, 0)
@@ -19,6 +20,7 @@ func TestReduceSum(t *testing.T) {
 }
 
 func TestReduceEmptySlice(t *testing.T) {
+	t.Parallel()
 	result, err := Reduce([]int{}, func(acc int, cur int, idx int, slice []int) (int, error) {
 		return acc + cur, nil
 	}, 42)
@@ -32,6 +34,7 @@ func TestReduceEmptySlice(t *testing.T) {
 }
 
 func TestReduceDifferentTypes(t *testing.T) {
+	t.Parallel()
 	result, err := Reduce([]string{"a", "b", "c"}, func(acc string, cur string, idx int, slice []string) (string, error) {
 		return acc + cur, nil
 	}, "")
@@ -45,6 +48,7 @@ func TestReduceDifferentTypes(t *testing.T) {
 }
 
 func TestReduceWithError(t *testing.T) {
+	t.Parallel()
 	_, err := Reduce([]int{1, 2, 3}, func(acc int, cur int, idx int, slice []int) (int, error) {
 		if cur == 2 {
 			return 0, errors.New("some error")
@@ -58,6 +62,7 @@ func TestReduceWithError(t *testing.T) {
 }
 
 func TestReduceWithIndex(t *testing.T) {
+	t.Parallel()
 	result, err := Reduce([]int{10, 20, 30}, func(acc int, cur int, idx int, slice []int) (int, error) {
 		return acc + idx, nil
 	}, 0)

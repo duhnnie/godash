@@ -6,6 +6,7 @@ import (
 )
 
 func TestEveryoneAllPass(t *testing.T) {
+	t.Parallel()
 	result, err := Everyone([]int{2, 4, 6, 8}, func(num int) (bool, error) {
 		return num%2 == 0, nil
 	})
@@ -19,6 +20,7 @@ func TestEveryoneAllPass(t *testing.T) {
 }
 
 func TestEveryoneNotAllPass(t *testing.T) {
+	t.Parallel()
 	result, err := Everyone([]int{2, 4, 5, 8}, func(num int) (bool, error) {
 		return num%2 == 0, nil
 	})
@@ -32,6 +34,7 @@ func TestEveryoneNotAllPass(t *testing.T) {
 }
 
 func TestEveryoneEmptySlice(t *testing.T) {
+	t.Parallel()
 	result, err := Everyone([]int{}, func(num int) (bool, error) {
 		return true, nil
 	})
@@ -45,6 +48,7 @@ func TestEveryoneEmptySlice(t *testing.T) {
 }
 
 func TestEveryoneWithError(t *testing.T) {
+	t.Parallel()
 	_, err := Everyone([]int{1, 2, 3}, func(num int) (bool, error) {
 		if num == 2 {
 			return false, errors.New("iterator error")
@@ -58,6 +62,7 @@ func TestEveryoneWithError(t *testing.T) {
 }
 
 func TestEveryoneDifferentTypes(t *testing.T) {
+	t.Parallel()
 	result, err := Everyone([]string{"a", "b", "c"}, func(s string) (bool, error) {
 		return len(s) == 1, nil
 	})

@@ -6,6 +6,7 @@ import (
 )
 
 func TestReduceMapTo_IntMapSum(t *testing.T) {
+	t.Parallel()
 	input := map[string]int{"a": 1, "b": 2, "c": 3}
 	result, err := ReduceMapTo(input, func(acc int, key string, value int) (int, error) {
 		return acc + value, nil
@@ -20,6 +21,7 @@ func TestReduceMapTo_IntMapSum(t *testing.T) {
 }
 
 func TestReduceMapTo_StringConcatenation(t *testing.T) {
+	t.Parallel()
 	input := map[int]string{1: "a", 2: "b", 3: "c"}
 	result, err := ReduceMapTo(input, func(acc string, key int, value string) (string, error) {
 		return acc + value, nil
@@ -34,6 +36,7 @@ func TestReduceMapTo_StringConcatenation(t *testing.T) {
 }
 
 func TestReduceMapTo_EmptyMap(t *testing.T) {
+	t.Parallel()
 	input := map[string]int{}
 	result, err := ReduceMapTo(input, func(acc int, key string, value int) (int, error) {
 		return acc + value, nil
@@ -48,6 +51,7 @@ func TestReduceMapTo_EmptyMap(t *testing.T) {
 }
 
 func TestReduceMapTo_ErrorFromReducer(t *testing.T) {
+	t.Parallel()
 	input := map[string]int{"a": 1, "b": 2}
 	testErr := fmt.Errorf("reducer error")
 
@@ -67,6 +71,7 @@ func TestReduceMapTo_ErrorFromReducer(t *testing.T) {
 }
 
 func TestReduceMapTo_ComplexType(t *testing.T) {
+	t.Parallel()
 	input := map[string]int{"x": 5, "y": 3, "z": 2}
 	result, err := ReduceMapTo(input, func(acc int, key string, value int) (int, error) {
 		if value > acc {

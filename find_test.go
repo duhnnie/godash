@@ -6,6 +6,7 @@ import (
 )
 
 func TestFind_IntSlice(t *testing.T) {
+	t.Parallel()
 	slice := []int{1, 2, 3, 4, 5}
 	fn := func(item int, idx int, s []int) (bool, error) {
 		return item%2 == 0, nil
@@ -20,6 +21,7 @@ func TestFind_IntSlice(t *testing.T) {
 }
 
 func TestFind_StringSlice(t *testing.T) {
+	t.Parallel()
 	slice := []string{"apple", "banana", "cherry"}
 	fn := func(item string, idx int, s []string) (bool, error) {
 		return item == "banana", nil
@@ -34,6 +36,7 @@ func TestFind_StringSlice(t *testing.T) {
 }
 
 func TestFind_NoMatch(t *testing.T) {
+	t.Parallel()
 	slice := []int{1, 3, 5}
 	fn := func(item int, idx int, s []int) (bool, error) {
 		return item%2 == 0, nil
@@ -48,6 +51,7 @@ func TestFind_NoMatch(t *testing.T) {
 }
 
 func TestFind_EmptySlice(t *testing.T) {
+	t.Parallel()
 	slice := []int{}
 	fn := func(item int, idx int, s []int) (bool, error) {
 		return true, nil
@@ -62,6 +66,7 @@ func TestFind_EmptySlice(t *testing.T) {
 }
 
 func TestFind_ErrorInFn(t *testing.T) {
+	t.Parallel()
 	slice := []int{1, 2, 3}
 	expectedErr := fmt.Errorf("test error")
 	fn := func(item int, idx int, s []int) (bool, error) {

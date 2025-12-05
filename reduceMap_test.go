@@ -6,6 +6,7 @@ import (
 )
 
 func TestReduceMap_SumValues(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{"a": 1, "b": 2, "c": 3}
 	reducer := func(acc int, key string, value int, dict map[string]int) (int, error) {
 		return acc + value, nil
@@ -20,6 +21,7 @@ func TestReduceMap_SumValues(t *testing.T) {
 }
 
 func TestReduceMap_ConcatenateStrings(t *testing.T) {
+	t.Parallel()
 	m := map[int]string{1: "a", 2: "b", 3: "c"}
 	reducer := func(acc string, key int, value string, dict map[int]string) (string, error) {
 		return acc + value, nil
@@ -34,6 +36,7 @@ func TestReduceMap_ConcatenateStrings(t *testing.T) {
 }
 
 func TestReduceMap_EmptyMap(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{}
 	reducer := func(acc int, key string, value int, dict map[string]int) (int, error) {
 		return acc + value, nil
@@ -48,6 +51,7 @@ func TestReduceMap_EmptyMap(t *testing.T) {
 }
 
 func TestReduceMap_ReducerError(t *testing.T) {
+	t.Parallel()
 	m := map[string]int{"a": 1, "b": 2}
 	reducer := func(acc int, key string, value int, dict map[string]int) (int, error) {
 		if key == "b" {
@@ -62,6 +66,7 @@ func TestReduceMap_ReducerError(t *testing.T) {
 }
 
 func TestReduceMap_CountElements(t *testing.T) {
+	t.Parallel()
 	m := map[string]bool{"x": true, "y": false, "z": true}
 	reducer := func(acc int, key string, value bool, dict map[string]bool) (int, error) {
 		return acc + 1, nil

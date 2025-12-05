@@ -5,6 +5,7 @@ import (
 )
 
 func TestClamp(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		value    int
 		min      int

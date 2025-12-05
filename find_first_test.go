@@ -6,6 +6,7 @@ import (
 )
 
 func TestFindFirst_IntSlice_FindEvenNumber(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 3, 4, 5, 7}
 	result, found, err := FindFirst(input, func(item int) (bool, error) {
 		return item%2 == 0, nil
@@ -23,6 +24,7 @@ func TestFindFirst_IntSlice_FindEvenNumber(t *testing.T) {
 }
 
 func TestFindFirst_IntSlice_NoMatch(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 3, 5, 7, 9}
 	result, found, err := FindFirst(input, func(item int) (bool, error) {
 		return item%2 == 0, nil
@@ -40,6 +42,7 @@ func TestFindFirst_IntSlice_NoMatch(t *testing.T) {
 }
 
 func TestFindFirst_StringSlice_LengthGreaterThanThree(t *testing.T) {
+	t.Parallel()
 	input := []string{"go", "a", "ok", "dashboard"}
 	result, found, err := FindFirst(input, func(item string) (bool, error) {
 		return len(item) > 3, nil
@@ -57,6 +60,7 @@ func TestFindFirst_StringSlice_LengthGreaterThanThree(t *testing.T) {
 }
 
 func TestFindFirst_EmptySlice(t *testing.T) {
+	t.Parallel()
 	input := []int{}
 	result, found, err := FindFirst(input, func(item int) (bool, error) {
 		return item > 0, nil
@@ -74,6 +78,7 @@ func TestFindFirst_EmptySlice(t *testing.T) {
 }
 
 func TestFindFirst_ErrorFromIterator(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 2, 3}
 	testErr := fmt.Errorf("iterator error")
 
@@ -93,6 +98,7 @@ func TestFindFirst_ErrorFromIterator(t *testing.T) {
 }
 
 func TestFindFirst_EarlyTermination(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 2, 3, 4, 5}
 	callCount := 0
 

@@ -6,6 +6,7 @@ import (
 )
 
 func TestSome_IntSlice_HasEvenNumbers(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 3, 5, 4, 7}
 	result, err := Some(input, func(item int, index int, slice []int) (bool, error) {
 		return item%2 == 0, nil
@@ -20,6 +21,7 @@ func TestSome_IntSlice_HasEvenNumbers(t *testing.T) {
 }
 
 func TestSome_IntSlice_NoEvenNumbers(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 3, 5, 7, 9}
 	result, err := Some(input, func(item int, index int, slice []int) (bool, error) {
 		return item%2 == 0, nil
@@ -34,6 +36,7 @@ func TestSome_IntSlice_NoEvenNumbers(t *testing.T) {
 }
 
 func TestSome_StringSlice_LengthGreaterThanThree(t *testing.T) {
+	t.Parallel()
 	input := []string{"go", "a", "ok", "dashboard"}
 	result, err := Some(input, func(item string, index int, slice []string) (bool, error) {
 		return len(item) > 3, nil
@@ -48,6 +51,7 @@ func TestSome_StringSlice_LengthGreaterThanThree(t *testing.T) {
 }
 
 func TestSome_EmptySlice(t *testing.T) {
+	t.Parallel()
 	input := []int{}
 	result, err := Some(input, func(item int, index int, slice []int) (bool, error) {
 		return item > 0, nil
@@ -62,6 +66,7 @@ func TestSome_EmptySlice(t *testing.T) {
 }
 
 func TestSome_ErrorFromIterator(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 2, 3}
 	testErr := fmt.Errorf("iterator error")
 
@@ -81,6 +86,7 @@ func TestSome_ErrorFromIterator(t *testing.T) {
 }
 
 func TestSome_EarlyTermination(t *testing.T) {
+	t.Parallel()
 	input := []int{1, 2, 3, 4, 5}
 	callCount := 0
 

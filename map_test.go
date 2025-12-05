@@ -8,6 +8,7 @@ import (
 
 func TestMap(t *testing.T) {
 	t.Run("transforms integers to strings", func(t *testing.T) {
+		t.Parallel()
 		input := []int{1, 2, 3}
 		result, err := Map(input, func(element int, index int, collection []int) (string, error) {
 			return fmt.Sprintf("%d", element), nil
@@ -22,6 +23,7 @@ func TestMap(t *testing.T) {
 	})
 
 	t.Run("returns error on transformation failure", func(t *testing.T) {
+		t.Parallel()
 		input := []int{1, 2, 3}
 		result, err := Map(input, func(element int, index int, collection []int) (string, error) {
 			if element == 2 {
@@ -38,6 +40,7 @@ func TestMap(t *testing.T) {
 	})
 
 	t.Run("handles empty collection", func(t *testing.T) {
+		t.Parallel()
 		input := []int{}
 		result, err := Map(input, func(element int, index int, collection []int) (string, error) {
 			return fmt.Sprintf("%d", element), nil
@@ -51,6 +54,7 @@ func TestMap(t *testing.T) {
 	})
 
 	t.Run("passes correct index and collection to function", func(t *testing.T) {
+		t.Parallel()
 		input := []int{10, 20, 30}
 		var indices []int
 		Map(input, func(element int, index int, collection []int) (int, error) {
