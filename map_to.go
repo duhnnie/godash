@@ -2,7 +2,7 @@
 // inspired by functional programming concepts similar to Lodash for JavaScript.
 package godash
 
-// MapToFn is a function type that transforms a single element of type T into a value of type U,
+// ElementIteratorFn is a function type that transforms a single element of type T into a value of type U,
 // returning an error if the transformation fails.
 //
 // This is a simpler alternative to MapFn, accepting only the element value without index
@@ -18,7 +18,7 @@ package godash
 // Returns:
 //   - U: the transformed value
 //   - error: an error if the transformation fails, nil otherwise
-type MapToFn[T any, U any] func(element T) (U, error)
+type ElementIteratorFn[T any, U any] func(element T) (U, error)
 
 // MapTo applies a transformation function to each element in a collection and returns a new slice
 // containing the transformed values. If any transformation fails, the operation is aborted and
@@ -38,7 +38,7 @@ type MapToFn[T any, U any] func(element T) (U, error)
 // Returns:
 //   - []U: a new slice containing the transformed elements
 //   - error: an error if any transformation fails, nil otherwise
-func MapTo[T any, U any](collection []T, mapFunction MapToFn[T, U]) ([]U, error) {
+func MapTo[T any, U any](collection []T, mapFunction ElementIteratorFn[T, U]) ([]U, error) {
 	mapped := make([]U, len(collection))
 
 	for index, element := range collection {

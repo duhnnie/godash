@@ -11,7 +11,7 @@ func TestMapTo(t *testing.T) {
 	tests := []struct {
 		name          string
 		collection    []int
-		mapFunction   MapToFn[int, string]
+		mapFunction   ElementIteratorFn[int, string]
 		expected      []string
 		expectedError bool
 	}{
