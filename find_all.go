@@ -38,3 +38,14 @@ func FindAll[T any](slice []T, fn IteratorFn[T, bool]) ([]T, error) {
 
 	return r, nil
 }
+
+// FindAllNE is the no-error variant of FindAll. The provided iterator does not return an error
+// and the function returns only the resulting slice.
+func FindAllNE[T any](slice []T, fn IteratorFnNE[T, bool]) []T {
+	adapted := func(item T, idx int, s []T) (bool, error) {
+		return fn(item, idx, s), nil
+	}
+
+	r, _ := FindAll(slice, adapted)
+	return r
+}

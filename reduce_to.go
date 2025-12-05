@@ -17,6 +17,9 @@ package godash
 //   - U: The type of the accumulator and the final result value
 type ReduceToFn[T, U any] func(accumulator U, currentValue T) (U, error)
 
+// ReduceToFnNE is a no-error variant of ReduceToFn where the reducer does not return an error.
+type ReduceToFnNE[T, U any] func(accumulator U, currentValue T) U
+
 // ReduceTo applies a reducer function against an accumulator and each element in
 // a slice (from left to right), resulting in a single value. The reducer is
 // invoked for each element in the slice, receiving the accumulated result from
@@ -47,4 +50,15 @@ func ReduceTo[T any, U any](slice []T, reducer ReduceToFn[T, U], initialValue U)
 	}
 
 	return acc, nil
+}
+
+// ReduceToNE is the no-error variant of ReduceTo. It accepts a reducer that cannot return an error
+// and returns only the accumulated value.
+func ReduceToNE[T any, U any](slice []T, reducer ReduceToFnNE[T, U], initialValue U) U {
+	adapted := func(acc U, item T) (U, error) {
+		return reducer(acc, item), nil
+	}
+
+	r, _ := ReduceTo(slice, adapted, initialValue)
+	return r
 }

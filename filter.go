@@ -38,3 +38,14 @@ func Filter[T any](slice []T, fn ElementIteratorFn[T, bool]) ([]T, error) {
 
 	return r, nil
 }
+
+// FilterNE is the no-error variant of Filter. It accepts an element-only predicate
+// that does not return an error and returns the filtered slice.
+func FilterNE[T any](slice []T, fn ElementIteratorFnNE[T, bool]) []T {
+	adapted := func(item T) (bool, error) {
+		return fn(item), nil
+	}
+
+	r, _ := Filter(slice, adapted)
+	return r
+}

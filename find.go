@@ -32,3 +32,14 @@ func Find[T any](slice []T, fn IteratorFn[T, bool]) (T, bool, error) {
 
 	return *new(T), false, nil
 }
+
+// FindNE is the no-error variant of Find. The provided iterator does not return an error
+// and FindNE returns the found element and a boolean indicator only.
+func FindNE[T any](slice []T, fn IteratorFnNE[T, bool]) (T, bool) {
+	adapted := func(item T, idx int, s []T) (bool, error) {
+		return fn(item, idx, s), nil
+	}
+
+	r, found, _ := Find(slice, adapted)
+	return r, found
+}
