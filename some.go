@@ -13,12 +13,17 @@ package godash
 //
 // Returns:
 //   - bool: true if the iterator function returns true for any element, otherwise false.
-func Some[T any](slice []T, iterator IteratorFn[T, bool]) bool {
+func Some[T any](slice []T, iterator IteratorFn[T, bool]) (bool, error) {
 	for index, item := range slice {
-		if iterator(item, index, slice) {
-			return true
+		f, err := iterator(item, index, slice)
+		if err != nil {
+			return false, err
+		}
+
+		if f {
+			return true, nil
 		}
 	}
 
-	return false
+	return false, nil
 }
