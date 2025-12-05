@@ -27,3 +27,14 @@ func Any[T any](slice []T, iterator ElementIteratorFn[T, bool]) (bool, error) {
 
 	return false, nil
 }
+
+// AnyNE is the no-error variant of Any. The provided iterator does not return an error
+// and AnyNE returns only the boolean result.
+func AnyNE[T any](slice []T, iterator ElementIteratorFnNE[T, bool]) bool {
+	adapted := func(element T) (bool, error) {
+		return iterator(element), nil
+	}
+
+	r, _ := Any(slice, adapted)
+	return r
+}

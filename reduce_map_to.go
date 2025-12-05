@@ -23,6 +23,9 @@ package godash
 //	U: The type of the accumulator and return value.
 type ReduceMapToFn[K comparable, V, U any] func(accumulator U, currentKey K, currentValue V) (U, error)
 
+// ReduceMapToFnNE is a no-error variant of ReduceMapToFn where the reducer does not return an error.
+type ReduceMapToFnNE[K comparable, V, U any] func(accumulator U, currentKey K, currentValue V) U
+
 // ReduceMapTo applies a reducer function to each key-value pair in the provided map,
 // accumulating a single result. The reducer function receives the current accumulator,
 // the key and value of the current element, and the entire map. If the reducer returns
@@ -57,4 +60,15 @@ func ReduceMapTo[K comparable, V, U any](m map[K]V, reducer ReduceMapToFn[K, V, 
 	}
 
 	return acc, nil
+}
+
+// ReduceMapToNE is the no-error variant of ReduceMapTo. It accepts a reducer that cannot return an error
+// and returns only the accumulated value.
+func ReduceMapToNE[K comparable, V, U any](m map[K]V, reducer ReduceMapToFnNE[K, V, U], initialValue U) U {
+	adapted := func(acc U, key K, value V) (U, error) {
+		return reducer(acc, key, value), nil
+	}
+
+	r, _ := ReduceMapTo(m, adapted, initialValue)
+	return r
 }

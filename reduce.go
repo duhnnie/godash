@@ -19,6 +19,9 @@ package godash
 //   - U: The type of the accumulator and the final result value
 type ReducerFn[T, U any] func(accumulator U, currentValue T, currentIndex int, slice []T) (U, error)
 
+// ReducerFnNE is a no-error variant of ReducerFn where the reducer does not return an error.
+type ReducerFnNE[T, U any] func(accumulator U, currentValue T, currentIndex int, slice []T) U
+
 // Reduce applies a reducer function against an accumulator and each element in
 // a slice (from left to right), resulting in a single value. The reducer is
 // invoked for each element in the slice, receiving the accumulated result from
@@ -49,4 +52,15 @@ func Reduce[T any, U any](slice []T, reducer ReducerFn[T, U], initialValue U) (U
 	}
 
 	return acc, nil
+}
+
+// ReduceNE is the no-error variant of Reduce. It accepts a reducer that cannot return an error
+// and returns the accumulated value directly.
+func ReduceNE[T any, U any](slice []T, reducer ReducerFnNE[T, U], initialValue U) U {
+	adapted := func(acc U, cur T, idx int, s []T) (U, error) {
+		return reducer(acc, cur, idx, s), nil
+	}
+
+	r, _ := Reduce(slice, adapted, initialValue)
+	return r
 }

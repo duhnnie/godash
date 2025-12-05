@@ -27,3 +27,14 @@ func Some[T any](slice []T, iterator IteratorFn[T, bool]) (bool, error) {
 
 	return false, nil
 }
+
+// SomeNE is the no-error variant of Some. It accepts a callback that does not return an error
+// and returns only the boolean result.
+func SomeNE[T any](slice []T, iterator IteratorFnNE[T, bool]) bool {
+	adapted := func(v T, idx int, s []T) (bool, error) {
+		return iterator(v, idx, s), nil
+	}
+
+	r, _ := Some(slice, adapted)
+	return r
+}

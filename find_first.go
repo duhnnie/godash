@@ -32,3 +32,14 @@ func FindFirst[T any](slice []T, fn ElementIteratorFn[T, bool]) (T, bool, error)
 
 	return *new(T), false, nil
 }
+
+// FindFirstNE is the no-error variant of FindFirst. The provided iterator does not return an error
+// and the function returns only the found element and a boolean indicator.
+func FindFirstNE[T any](slice []T, fn ElementIteratorFnNE[T, bool]) (T, bool) {
+	adapted := func(item T) (bool, error) {
+		return fn(item), nil
+	}
+
+	r, found, _ := FindFirst(slice, adapted)
+	return r, found
+}

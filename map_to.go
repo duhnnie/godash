@@ -20,6 +20,9 @@ package godash
 //   - error: an error if the transformation fails, nil otherwise
 type ElementIteratorFn[T any, U any] func(element T) (U, error)
 
+// ElementIteratorFnNE is a no-error variant of ElementIteratorFn that does not return an error.
+type ElementIteratorFnNE[T any, U any] func(element T) U
+
 // MapTo applies a transformation function to each element in a collection and returns a new slice
 // containing the transformed values. If any transformation fails, the operation is aborted and
 // the error is returned.
@@ -51,4 +54,16 @@ func MapTo[T any, U any](collection []T, mapFunction ElementIteratorFn[T, U]) ([
 	}
 
 	return mapped, nil
+}
+
+// MapToNE is a convenience wrapper for MapTo that accepts a no-error mapper and
+// returns the transformed slice without an error return value (errors from the
+// underlying MapTo are ignored since the provided mapper cannot return an error).
+func MapToNE[T any, U any](collection []T, mapFunction ElementIteratorFnNE[T, U]) []U {
+	adapted := func(element T) (U, error) {
+		return mapFunction(element), nil
+	}
+
+	r, _ := MapTo(collection, adapted)
+	return r
 }

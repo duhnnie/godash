@@ -8,6 +8,9 @@ package godash
 // It returns a value of type V and a potential error.
 type IteratorFn[T, V any] func(currentValue T, currentIndex int, slice []T) (V, error)
 
+// IteratorFnNE is the no-error variant of IteratorFn where the callback does not return an error.
+type IteratorFnNE[T, V any] func(currentValue T, currentIndex int, slice []T) V
+
 // Every iterates over elements of a slice, returning true if all elements pass the
 // test implemented by the provided iterator function. It stops iterating as soon as
 // the iterator function returns false for any element.
@@ -49,4 +52,14 @@ func Every[T any](slice []T, iterator IteratorFn[T, bool]) (bool, error) {
 	}
 
 	return true, nil
+}
+
+// EveryoneNE is the no-error variant of Everyone which accepts a callback that does not return an error.
+func EveryoneNE[T any](slice []T, iterator ElementIteratorFnNE[T, bool]) bool {
+	adapted := func(v T) (bool, error) {
+		return iterator(v), nil
+	}
+
+	r, _ := Everyone(slice, adapted)
+	return r
 }

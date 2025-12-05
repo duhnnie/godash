@@ -24,6 +24,9 @@ package godash
 //	U: The type of the accumulator and return value.
 type ReducerMapFn[K comparable, V, U any] func(accumulator U, currentKey K, currentValue V, dictionary map[K]V) (U, error)
 
+// ReducerMapFnNE is a no-error variant of ReducerMapFn where the reducer does not return an error.
+type ReducerMapFnNE[K comparable, V, U any] func(accumulator U, currentKey K, currentValue V, dictionary map[K]V) U
+
 // ReduceMap applies a reducer function to each key-value pair in the provided map,
 // accumulating a single result. The reducer function receives the current accumulator,
 // the key and value of the current element, and the entire map. If the reducer returns
@@ -58,4 +61,15 @@ func ReduceMap[K comparable, V, U any](m map[K]V, reducer ReducerMapFn[K, V, U],
 	}
 
 	return acc, nil
+}
+
+// ReduceMapNE is the no-error variant of ReduceMap. It accepts a reducer that cannot return an error
+// and returns only the accumulated value.
+func ReduceMapNE[K comparable, V, U any](m map[K]V, reducer ReducerMapFnNE[K, V, U], initialValue U) U {
+	adapted := func(acc U, key K, value V, dict map[K]V) (U, error) {
+		return reducer(acc, key, value, dict), nil
+	}
+
+	r, _ := ReduceMap(m, adapted, initialValue)
+	return r
 }
